@@ -1,0 +1,8 @@
+IncidentID,Date,Location,IncidentType,Severity,Description
+1,2026-02-01,Warehouse A,Fire,High,Fire broke out due to electrical fault.
+2,2026-02-05,Site B,Injury,Medium,Worker slipped and fell while carrying materials.
+3,2026-02-10,Warehouse C,Theft,Low,Theft of equipment reported.
+4,2026-02-12,Site D,Accident,High,Heavy machinery accident causing multiple injuries.
+5,2026-02-15,Warehouse A,Fire,High,Minor fire extinguished quickly by staff.
+6,2026-02-16,Site E,Injury,Medium,Worker injured while operating machinery.
+7,2026-02-18,Warehouse C,Injury,Medium,Worker's hand injured due to faulty equipment.
