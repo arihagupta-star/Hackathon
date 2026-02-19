@@ -1,13 +1,24 @@
-# Configuration settings for the chatbot
+# Configuration settings for the Agentic Safety Incident Chatbot
+import os
 
-# Chatbot API Settings
-API_URL = "https://api.example.com/chatbot"
-API_KEY = "your_api_key_here"
+# Data file paths
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+REPORTS_CSV = os.path.join(BASE_DIR, "base_reports - base_reports.csv.csv")
+ACTIONS_CSV = os.path.join(BASE_DIR, "actions - actions.csv.csv")
 
-# Logging Settings
-LOG_LEVEL = "DEBUG"
-LOG_FILE = "chatbot.log"
+# Similarity settings
+TOP_N_SIMILAR = 5          # Number of similar incidents to return
+SIMILARITY_THRESHOLD = 0.1  # Minimum similarity score to consider relevant
 
-# User Settings
-DEFAULT_LANGUAGE = "en"
-MAX_TOKENS = 150
+# Text fields used for building the similarity index
+TEXT_FIELDS = [
+    "what_happened",
+    "why_did_it_happen",
+    "causal_factors",
+    "title",
+    "lessons_to_prevent",
+]
+
+# App settings
+APP_TITLE = "🛡️ Safety Incident Advisor"
+APP_ICON = "🛡️"
