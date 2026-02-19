@@ -13,9 +13,9 @@ def load_data():
     Load both CSVs and return them as a dict of DataFrames.
     """
     try:
-        # Explicit encoding to handle potential issues on different OS/environments
-        reports = pd.read_csv(REPORTS_CSV, encoding='utf-8', errors='replace')
-        actions = pd.read_csv(ACTIONS_CSV, encoding='utf-8', errors='replace')
+        # Fixed: Changed 'errors' to 'encoding_errors' (the correct pandas argument)
+        reports = pd.read_csv(REPORTS_CSV, encoding='utf-8', encoding_errors='replace')
+        actions = pd.read_csv(ACTIONS_CSV, encoding='utf-8', encoding_errors='replace')
     except Exception as e:
         error_msg = f"Error loading CSV files. Path: {REPORTS_CSV}. Error: {e}"
         st.error(f"⚠️ {error_msg}")

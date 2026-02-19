@@ -86,6 +86,10 @@ class ChatbotAgent:
             return self._recommend_response(user_message)
 
     def _help_response(self):
+        stats = self.analyzer.get_statistics()
+        total_inc = stats.get("total_incidents", 0)
+        total_act = stats.get("total_actions", 0)
+        
         return (
             "👋 **Hi! I'm your Safety Incident Advisor.** Here's what I can do:\n\n"
             "🔍 **Describe an incident** — I'll find similar past cases and recommend actions\n\n"
@@ -93,7 +97,7 @@ class ChatbotAgent:
             "🎓 **Ask for training suggestions** — e.g. *\"What training for confined space work?\"*\n\n"
             "📊 **Ask for statistics** — e.g. *\"How many high-risk incidents do we have?\"*\n\n"
             "🔎 **Search incidents** — e.g. *\"Show me incidents involving pressure release\"*\n\n"
-            "Just type your question and I'll analyze our database of **196 historical incidents** and **1,688 corrective actions**!"
+            f"Just type your question and I'll analyze our database of **{total_inc} historical incidents** and **{total_act} corrective actions**!"
         )
 
     def _stats_response(self):
