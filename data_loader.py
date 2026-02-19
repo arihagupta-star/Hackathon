@@ -4,6 +4,7 @@ Loads and preprocesses the safety incident datasets.
 """
 
 import pandas as pd
+import streamlit as st
 from config import REPORTS_CSV, ACTIONS_CSV, TEXT_FIELDS
 
 
