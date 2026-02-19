@@ -235,9 +235,12 @@ class ChatbotAgent:
                 context += f"  Context: {inc.get('what_happened')}\n"
             
             summary = self._synthesize_with_gemini(f"Summarize these search results for: {query}", context, "search")
-            # Combine summary with list
-        
-        lines = [f"🔎 **Found {len(results)} incidents:**\n"]
+            if not summary.startswith("⚠️"):
+                lines = [f"🤖 **Gemini Summary:**\n{summary}\n", "---", f"🔎 **Full Search Results ({len(results)}):**\n"]
+            else:
+                lines = [f"🔎 **Found {len(results)} incidents:**\n"]
+        else:
+            lines = [f"🔎 **Found {len(results)} incidents:**\n"]
 
         for i, inc in enumerate(results, 1):
             score_pct = int(inc["similarity"] * 100)
