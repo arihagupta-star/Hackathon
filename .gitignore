@@ -1,0 +1,14 @@
+__pycache__/
+.streamlit/
+.env
+*.pyc
+*.pyo
+.DS_Store
+*.db
+high_risk_incidents.csv
+valid_examples.csv
+verify_reporting.py
+fix_csvs.py
+Dockerfile
+.dockerignore
+cloudrun_deploy.sh

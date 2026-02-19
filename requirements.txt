@@ -1,9 +1,5 @@
-# Python Dependencies for METHAN-AI Safety Incident Chatbot
-
 numpy>=1.26
 pandas>=2.0
 scikit-learn>=1.3
 google-generativeai
 streamlit
-matplotlib
-seaborn

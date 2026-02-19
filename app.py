@@ -130,199 +130,204 @@ def init_system():
     return analyzer, agent
 
 
-analyzer, agent = init_system()
-stats = analyzer.get_statistics()
+try:
+    analyzer, agent = init_system()
+    stats = analyzer.get_statistics()
 
-# ──────────────────────────────────────────────
-# Sidebar
-# ──────────────────────────────────────────────
-with st.sidebar:
-    st.markdown("## 🛡️ METHAN-AI")
-    st.caption("Advanced Incident Intelligence for Methanex")
+    # ──────────────────────────────────────────────
+    # Sidebar
+    # ──────────────────────────────────────────────
+    with st.sidebar:
+        st.markdown("## 🛡️ METHAN-AI")
+        st.caption("Advanced Incident Intelligence for Methanex")
 
-    st.markdown("---")
+        st.markdown("---")
 
-    # Stats cards
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown(
-            f'<div class="stat-card"><h3>{stats["total_incidents"]}</h3><p>Incidents</p></div>',
-            unsafe_allow_html=True,
-        )
-    with col2:
-        st.markdown(
-            f'<div class="stat-card"><h3>{stats["total_actions"]}</h3><p>Actions</p></div>',
-            unsafe_allow_html=True,
-        )
+        # Stats cards
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown(
+                f'<div class="stat-card"><h3>{stats["total_incidents"]}</h3><p>Incidents</p></div>',
+                unsafe_allow_html=True,
+            )
+        with col2:
+            st.markdown(
+                f'<div class="stat-card"><h3>{stats["total_actions"]}</h3><p>Actions</p></div>',
+                unsafe_allow_html=True,
+            )
 
-    st.markdown("---")
+        st.markdown("---")
 
-    # Risk level breakdown
-    st.markdown("#### Risk Levels")
-    for level, count in stats["by_risk_level"].items():
-        emoji = "🔴" if "high" in str(level).lower() else "🟡" if "medium" in str(level).lower() else "🟢"
-        st.markdown(f"{emoji} **{level}:** {count}")
+        # Risk level breakdown
+        st.markdown("#### Risk Levels")
+        for level, count in stats["by_risk_level"].items():
+            emoji = "🔴" if "high" in str(level).lower() else "🟡" if "medium" in str(level).lower() else "🟢"
+            st.markdown(f"{emoji} **{level}:** {count}")
 
-    st.markdown("---")
+        st.markdown("---")
 
-    # Quick example questions
-    st.markdown("#### 💡 Try asking:")
+        # Quick example questions
+        st.markdown("#### 💡 Try asking:")
 
-    example_questions = [
-        "We had a chemical spill during tank cleaning, what should we do?",
-        "What training for confined space work?",
-        "Show me high risk incidents involving vapour release",
-        "Give me an overview of incident statistics",
-        "What lessons from electrical incidents?",
-    ]
-
-    for q in example_questions:
-        if st.button(q, key=f"ex_{hash(q)}"):
-            st.session_state["prefill_question"] = q
-
-    st.markdown("---")
-    
-    # Gemini Status
-    if agent.gemini_enabled:
-        st.success("✨ Gemini AI: Active")
-    else:
-        st.warning("⚠️ Gemini AI: Inactive (using offline engine)")
-        st.info("To enable Gemini, add `GEMINI_API_KEY` to secrets.")
-
-    st.caption("Data: 196 incidents • 1,688 corrective actions")
-
-
-# ──────────────────────────────────────────────
-# Main Header (METHAN-AI)
-# ──────────────────────────────────────────────
-st.markdown(
-    """
-    <div class="header-container">
-        <h1 class="main-title">METHAN-AI</h1>
-        <p class="main-subtitle">Intelligent Safety & Incident Command Bot</p>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
-tab1, tab2 = st.tabs(["💬 Chat Advisor", "📝 Report Incident"])
-
-with tab1:
-    # Initialize chat history
-    if "messages" not in st.session_state:
-        st.session_state.messages = [
-            {
-                "role": "assistant",
-                "content": agent.respond("help"),
-            }
+        example_questions = [
+            "We had a chemical spill during tank cleaning, what should we do?",
+            "What training for confined space work?",
+            "Show me high risk incidents involving vapour release",
+            "Give me an overview of incident statistics",
+            "What lessons from electrical incidents?",
         ]
 
-    # Display chat history
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-
-    # Check for prefilled question from sidebar
-    prefill = st.session_state.pop("prefill_question", None)
-
-    # Chat input
-    user_input = st.chat_input("Describe an incident or ask a question...")
-
-    # Use prefill if set, otherwise use typed input
-    prompt = prefill or user_input
-
-    if prompt:
-        # Show user message
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
-
-        # Generate response
-        with st.chat_message("assistant"):
-            with st.spinner("Analyzing historical patterns..."):
-                response = agent.respond(prompt)
-            st.markdown(response)
-
-        st.session_state.messages.append({"role": "assistant", "content": response})
-
-with tab2:
-    st.markdown("### 📝 Report a New Incident")
-    st.info("Fill out the form below to add a new incident to the historical database. This will help METHAN-AI provide better recommendations in the future.")
-    
-    with st.form("incident_report_form", clear_on_submit=True):
-        col_a, col_b = st.columns(2)
-        
-        with col_a:
-            title = st.text_input("Incident Title*", placeholder="e.g., Gas leak during flange tightening")
-            category = st.selectbox("Category*", analyzer.get_category_list())
-            risk_level = st.selectbox("Risk Level*", analyzer.get_risk_levels())
-            location = st.selectbox("Location*", analyzer.get_locations())
-            date = st.date_input("Date*")
-            
-        with col_b:
-            setting = st.text_input("Setting", placeholder="e.g., Maintenance, Operation")
-            injury_category = st.text_input("Injury Category", placeholder="e.g., First Aid, Near Miss")
-            severity = st.text_input("Severity", placeholder="e.g., Low, Medium, High")
-            primary_classification = st.text_input("Primary Classification")
+        for q in example_questions:
+            if st.button(q, key=f"ex_{hash(q)}"):
+                st.session_state["prefill_question"] = q
 
         st.markdown("---")
-        st.markdown("#### Incident Details")
-        what_happened = st.text_area("What Happened?*", placeholder="Describe the sequence of events...")
-        what_could_have_happened = st.text_area("What Could Have Happened?", placeholder="describe potential consequences...")
-        why_did_it_happen = st.text_area("Why Did It Happen? (Root Cause)", placeholder="Identify the underlying causes...")
-        causal_factors = st.text_area("Causal Factors", placeholder="List specific contributing factors...")
         
-        st.markdown("---")
-        st.markdown("#### Lessons & Actions")
-        what_went_well = st.text_area("What Went Well?", placeholder="Any positive actions taken during the incident...")
-        lessons_to_prevent = st.text_area("Lessons to Prevent Reoccurrence*", placeholder="Key takeaways and preventive measures...")
-        
-        st.markdown("#### Corrective Actions")
-        st.caption("Add at least one corrective action.")
-        
-        action_1 = st.text_input("Action 1", placeholder="Action description")
-        owner_1 = st.text_input("Owner 1", placeholder="Role or department")
-        
-        action_2 = st.text_input("Action 2", placeholder="Action description")
-        owner_2 = st.text_input("Owner 2", placeholder="Role or department")
-        
-        submitted = st.form_submit_button("Submit Incident Report", type="primary")
-        
-        if submitted:
-            if not (title and what_happened and lessons_to_prevent and action_1):
-                st.error("Please fill in all required fields (*) and at least one corrective action.")
-            else:
-                report_data = {
-                    "title": title,
-                    "category": category,
-                    "risk_level": risk_level,
-                    "location": location,
-                    "date": str(date),
-                    "setting": setting,
-                    "injury_category": injury_category,
-                    "severity": severity,
-                    "primary_classification": primary_classification,
-                    "what_happened": what_happened,
-                    "what_could_have_happened": what_could_have_happened,
-                    "why_did_it_happen": why_did_it_happen,
-                    "causal_factors": causal_factors,
-                    "what_went_well": what_went_well,
-                    "lessons_to_prevent": lessons_to_prevent
+        # Gemini Status
+        if agent.gemini_enabled:
+            st.success("✨ Gemini AI: Active")
+        else:
+            st.warning("⚠️ Gemini AI: Inactive (using offline engine)")
+            st.info("To enable Gemini, add `GEMINI_API_KEY` to secrets.")
+
+        st.caption("Data: 196 incidents • 1,688 corrective actions")
+
+
+    # ──────────────────────────────────────────────
+    # Main Header (METHAN-AI)
+    # ──────────────────────────────────────────────
+    st.markdown(
+        """
+        <div class="header-container">
+            <h1 class="main-title">METHAN-AI</h1>
+            <p class="main-subtitle">Intelligent Safety & Incident Command Bot</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    tab1, tab2 = st.tabs(["💬 Chat Advisor", "📝 Report Incident"])
+
+    with tab1:
+        # Initialize chat history
+        if "messages" not in st.session_state:
+            st.session_state.messages = [
+                {
+                    "role": "assistant",
+                    "content": agent.respond("help"),
                 }
+            ]
+
+        # Display chat history
+        for message in st.session_state.messages:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
+
+        # Check for prefilled question from sidebar
+        prefill = st.session_state.pop("prefill_question", None)
+
+        # Chat input
+        user_input = st.chat_input("Describe an incident or ask a question...")
+
+        # Use prefill if set, otherwise use typed input
+        prompt = prefill or user_input
+
+        if prompt:
+            # Show user message
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            with st.chat_message("user"):
+                st.markdown(prompt)
+
+            # Generate response
+            with st.chat_message("assistant"):
+                with st.spinner("Analyzing historical patterns..."):
+                    response = agent.respond(prompt)
+                st.markdown(response)
+
+            st.session_state.messages.append({"role": "assistant", "content": response})
+
+    with tab2:
+        st.markdown("### 📝 Report a New Incident")
+        st.info("Fill out the form below to add a new incident to the historical database. This will help METHAN-AI provide better recommendations in the future.")
+        
+        with st.form("incident_report_form", clear_on_submit=True):
+            col_a, col_b = st.columns(2)
+            
+            with col_a:
+                title = st.text_input("Incident Title*", placeholder="e.g., Gas leak during flange tightening")
+                category = st.selectbox("Category*", analyzer.get_category_list())
+                risk_level = st.selectbox("Risk Level*", analyzer.get_risk_levels())
+                location = st.selectbox("Location*", analyzer.get_locations())
+                date = st.date_input("Date*")
                 
-                actions = []
-                if action_1:
-                    actions.append({"action": action_1, "owner": owner_1 or "TBD"})
-                if action_2:
-                    actions.append({"action": action_2, "owner": owner_2 or "TBD"})
-                
-                success, result = save_new_incident(report_data, actions)
-                
-                if success:
-                    st.success(f"✅ Incident {result} successfully reported! The similarity engine will be updated.")
-                    st.balloons()
-                    # Clear cache to reload new data
-                    st.cache_resource.clear()
-                    # st.rerun() # Optional: auto-rerun to refresh UI
+            with col_b:
+                setting = st.text_input("Setting", placeholder="e.g., Maintenance, Operation")
+                injury_category = st.text_input("Injury Category", placeholder="e.g., First Aid, Near Miss")
+                severity = st.text_input("Severity", placeholder="e.g., Low, Medium, High")
+                primary_classification = st.text_input("Primary Classification")
+
+            st.markdown("---")
+            st.markdown("#### Incident Details")
+            what_happened = st.text_area("What Happened?*", placeholder="Describe the sequence of events...")
+            what_could_have_happened = st.text_area("What Could Have Happened?", placeholder="describe potential consequences...")
+            why_did_it_happen = st.text_area("Why Did It Happen? (Root Cause)", placeholder="Identify the underlying causes...")
+            causal_factors = st.text_area("Causal Factors", placeholder="List specific contributing factors...")
+            
+            st.markdown("---")
+            st.markdown("#### Lessons & Actions")
+            what_went_well = st.text_area("What Went Well?", placeholder="Any positive actions taken during the incident...")
+            lessons_to_prevent = st.text_area("Lessons to Prevent Reoccurrence*", placeholder="Key takeaways and preventive measures...")
+            
+            st.markdown("#### Corrective Actions")
+            st.caption("Add at least one corrective action.")
+            
+            action_1 = st.text_input("Action 1", placeholder="Action description")
+            owner_1 = st.text_input("Owner 1", placeholder="Role or department")
+            
+            action_2 = st.text_input("Action 2", placeholder="Action description")
+            owner_2 = st.text_input("Owner 2", placeholder="Role or department")
+            
+            submitted = st.form_submit_button("Submit Incident Report", type="primary")
+            
+            if submitted:
+                if not (title and what_happened and lessons_to_prevent and action_1):
+                    st.error("Please fill in all required fields (*) and at least one corrective action.")
                 else:
-                    st.error(f"❌ Failed to save incident: {result}")
+                    report_data = {
+                        "title": title,
+                        "category": category,
+                        "risk_level": risk_level,
+                        "location": location,
+                        "date": str(date),
+                        "setting": setting,
+                        "injury_category": injury_category,
+                        "severity": severity,
+                        "primary_classification": primary_classification,
+                        "what_happened": what_happened,
+                        "what_could_have_happened": what_could_have_happened,
+                        "why_did_it_happen": why_did_it_happen,
+                        "causal_factors": causal_factors,
+                        "what_went_well": what_went_well,
+                        "lessons_to_prevent": lessons_to_prevent
+                    }
+                    
+                    actions = []
+                    if action_1:
+                        actions.append({"action": action_1, "owner": owner_1 or "TBD"})
+                    if action_2:
+                        actions.append({"action": action_2, "owner": owner_2 or "TBD"})
+                    
+                    success, result = save_new_incident(report_data, actions)
+                    
+                    if success:
+                        st.success(f"✅ Incident {result} successfully reported! The similarity engine will be updated.")
+                        st.balloons()
+                        # Clear cache to reload new data
+                        st.cache_resource.clear()
+                        # st.rerun() # Optional: auto-rerun to refresh UI
+                    else:
+                        st.error(f"❌ Failed to save incident: {result}")
+except Exception as main_error:
+    st.error("🚀 METHAN-AI Startup Error")
+    st.exception(main_error)
+    st.info("This normally happens if a library is missing or data files are corrupted. Please check the logs.")
