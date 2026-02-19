@@ -17,8 +17,9 @@ def load_data():
         reports = pd.read_csv(REPORTS_CSV, encoding='utf-8', errors='replace')
         actions = pd.read_csv(ACTIONS_CSV, encoding='utf-8', errors='replace')
     except Exception as e:
-        st.error(f"⚠️ Error loading data files: {e}")
-        print(f"Error loading CSV files: {e}")
+        error_msg = f"Error loading CSV files. Path: {REPORTS_CSV}. Error: {e}"
+        st.error(f"⚠️ {error_msg}")
+        print(error_msg)
         # Create dummy data with at least one row to prevent TF-IDF crash
         reports = pd.DataFrame([{
             "case_id": "ERR-001", 
