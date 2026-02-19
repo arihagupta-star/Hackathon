@@ -1687,3 +1687,5 @@ CASE-196,6,Add a training module on complex/legacy piping interactions and bound
 CASE-196,7,Create an MOC checklist item requiring isolation ‑ impact assessment for any line modification or tie ‑ in change.,Engineering Manager,>90 days,MOC audits reflect consistent use
 CASE-196,8,Establish routine inspections of legacy valves for leak ‑ through or incomplete shutoff.,Maintenance Planner,30–90 days,PM tasks created; inspection reports logged
 CASE-196,9,Conduct periodic audits of tie ‑ in isolations to identify documentation gaps.,Internal Audit Lead,>90 days,Audit findings tracked to closure
+INC-197,1,Replace gasket on F-101,Maintenance Team,,
+INC-197,2,Review PM schedule for all similar flanges,Unit Engineer,,
