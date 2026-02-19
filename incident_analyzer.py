@@ -22,9 +22,14 @@ class IncidentAnalyzer:
             ngram_range=(1, 2),
         )
         # Build the TF-IDF matrix on all incident texts
-        self.tfidf_matrix = self.vectorizer.fit_transform(
-            self.data["search_text"].fillna("")
-        )
+        # Handle empty/missing data gracefully to prevent scikit-learn 'empty vocabulary' error
+        texts = self.data["search_text"].fillna("").astype(str).tolist()
+        
+        # If no documents have text, add a dummy one to prevent ValueError
+        if not any(t.strip() for t in texts):
+            texts = ["placeholder search text for empty database"]
+            
+        self.tfidf_matrix = self.vectorizer.fit_transform(texts)
 
     def find_similar(self, query, top_n=None, filters=None):
         """

@@ -16,9 +16,24 @@ def load_data():
         reports = pd.read_csv(REPORTS_CSV, encoding='utf-8', errors='replace')
         actions = pd.read_csv(ACTIONS_CSV, encoding='utf-8', errors='replace')
     except Exception as e:
+        st.error(f"⚠️ Error loading data files: {e}")
         print(f"Error loading CSV files: {e}")
-        # Create empty dummy data to allow app to start even if files are missing in cloud
-        reports = pd.DataFrame(columns=["case_id", "title", "what_happened", "why_did_it_happen", "causal_factors", "lessons_to_prevent", "category", "risk_level", "location", "date", "setting", "injury_category", "severity"])
+        # Create dummy data with at least one row to prevent TF-IDF crash
+        reports = pd.DataFrame([{
+            "case_id": "ERR-001", 
+            "title": "Error Loading Database", 
+            "what_happened": "The incident database (CSV files) could not be loaded. Please check file paths.",
+            "why_did_it_happen": "File not found or access denied.",
+            "causal_factors": str(e),
+            "lessons_to_prevent": "Check GitHub repository for missing CSV files.",
+            "category": "System", 
+            "risk_level": "None", 
+            "location": "Cloud Server", 
+            "date": "2026-02-19", 
+            "setting": "System", 
+            "injury_category": "None", 
+            "severity": "None"
+        }])
         actions = pd.DataFrame(columns=["case_id", "action_number", "action", "owner", "timing", "verification"])
         
     return {"reports": reports, "actions": actions}
