@@ -1,0 +1,64 @@
+case_id,title,risk_level
+CASE-011,Contractor Line-Breaking Deviation During Drain Line Isolation,High
+CASE-012,Contractor Hot Work Near Unverified Drain Line,High
+CASE-020,Unexpected Vapour Release During Transfer Line Warm ‑ Up,High
+CASE-021,Vapour Puff During Additive Injection Line Start ‑ Up,High
+CASE-022,Overpressure and Toxic Release During Reactor Heat ‑ Up,High
+CASE-023,Contractor Exposed to Vapour During Temporary Line Disconnection,High
+CASE-027,Toxic Back ‑ Flow and Entrant Collapse During Confined ‑ Space Reactor Inspection,High
+CASE-028,Multiple Entrants Overcome by Vapours in Reactor Pit,High
+CASE-029,Contractor Entrant Exposed to Residual Vapour in Process Vessel,High
+CASE-030,Safety Watch Absent During Contractor Entry Activities,High
+CASE-033,Chemical Residue Release and Mechanical Seal Failure During Contractor Line Unbolting,High
+CASE-034,Swinging Load and Acid Spray Injure Contractor at Column Top,High
+CASE-035,Chemical Leak Contacts Energized Motor Terminal During Contractor Work,High
+CASE-043,Arc Flash During Overhead Panel Removal Causes Fall and Dropped Tool Hazard,High
+CASE-044,Arc Flash During Overhead Panel Removal Causes Fall and Dropped Tool Hazard,High
+CASE-046,Cloud Dashboard Breach Leads to Process Safety Near Miss,High
+CASE-052,Unauthorized System Change Exposes Crew to Live Pneumatic Energy,High
+CASE-053,Unauthorized System Override Exposes Crew to Live Hydraulic Pressure,High
+CASE-055,Unauthorized System Override Creates Multi ‑ Energy Exposure During Line Maintenance,High
+CASE-056,Multi ‑ Energy Isolation Breach During System Commissioning,High
+CASE-057,Multi ‑ Energy Isolation Breach During Contractor Equipment Upgrade,High
+CASE-059,Multi ‑ Energy Release Risk During Overlapping SIMOPS,High
+CASE-060,Cyber ‑ Triggered Multi ‑ Energy Isolation Breach on Control Module,High
+CASE-061,Cyber ‑ Triggered Multi ‑ Energy Activation During PTW Conflict,High
+CASE-062,Cyber ‑ Triggered Isolation Bypass on Multi ‑ Energy Actuator,High
+CASE-063,Cyber ‑ Triggered Isolation Fault During Line ‑ Breaking Activity,High
+CASE-066,Unauthorized Network Access Causes Control System Disruption,High
+CASE-070,Cyber Intrusion Disrupts Mechanical Startup Sequence,High
+CASE-071,Cyber ‑ Triggered Control Interference During Overlapping SIMOPS,High
+CASE-072,Cyber Interference During Line ‑ Breaking on Process Header,High
+CASE-073,Cyber Compromise Skews Toxic Gas Detection Readings,High
+CASE-077,Incomplete Isolation Leads to Multi ‑ Energy Exposure During Valve Removal,High
+CASE-114,AI System Fails to Detect Critical Equipment Fault,High
+CASE-116,AI System Prioritizes Minor Alert Over Critical Alarm,High
+CASE-117,AI System Misdiagnoses Vibration Fault as Flow Instability,High
+CASE-118,AI Recommendations Create Escalating Control Feedback Loop,High
+CASE-122,AI Control Override Fails to Disengage During Manual Intervention,High
+CASE-127,AI Multi ‑ Layer Consensus Breakdown Causes Conflicting Operational Decisions,High
+CASE-133,AI Decision Engine Creates Conflicting Duplicate Control Paths,High
+CASE-152,Social ‑ Engineering Attack Leads to Unauthorized System Privilege Escalation,High
+CASE-166,Uncontrolled Supervisory Override Enabled Work to Proceed Without Required Safeguards,High
+CASE-171,Bootstrap Isolation Failure During Early-Stage Equipment Prep,High
+CASE-172,SIMOPS Collision During Parallel Maintenance and Operations Activities,High
+CASE-173,Energy ‑ Isolation Drift During Extended Maintenance Preparation,High
+CASE-176,Cross ‑ Team Isolation Confusion During Parallel Maintenance,High
+CASE-178,Misinterpreted P&ID Boundary Led to Incorrect Isolation Selection,High
+CASE-179,Incorrect Boundary Assumption Resulted in Partial System Isolation,High
+CASE-181,Unrecognized Instrument ‑ Air Source Caused Redundant Energy Hazard,High
+CASE-182,Secondary Actuator Failure Caused Unexpected Valve Motion During Maintenance,High
+CASE-183,Unexpected Air Manifold Backfeed During Line Isolation,High
+CASE-184,Dual-Motion Actuator Misalignment Caused Uncontrolled Valve Shift,High
+CASE-185,Unexpected Pneumatic–Hydraulic Cross ‑ Coupling Caused Uncontrolled Valve Stroke,High
+CASE-186,Hidden Hydraulic Accumulator Pressure Caused Near ‑ Miss During Disassembly,High
+CASE-187,Accumulator Isolation Drift Resulted in Unexpected Hydraulic Pressure Return,High
+CASE-188,Cascading Pressure Release from Multiple Hydraulic Accumulators,High
+CASE-189,Blocked Bleed ‑ Path Failure Led to Unexpected Hydraulic Pressure Release,High
+CASE-190,Hydraulic–Pneumatic Migration Caused Unexpected Actuator Motion,High
+CASE-191,Hydraulic–Pneumatic Interaction Led to Unexpected Valve Stroke,High
+CASE-192,Cross ‑ Header Interaction Failure Led to Unexpected Pressure Transfer,High
+CASE-193,Multi ‑ Header Feed Mis ‑ Identification During Isolation,High
+CASE-194,Tie ‑ In Isolation Drift Led to Unexpected Pressure Return,High
+CASE-195,Legacy ‑ Line Re ‑ Pressurization Caused Unexpected Pressure Return During Line Break,High
+CASE-196,Mis ‑ Mapped Tie ‑ In Boundary Led to Incorrect Isolation,High

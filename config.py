@@ -22,3 +22,8 @@ TEXT_FIELDS = [
 # App settings
 APP_TITLE = "🛡️ Safety Incident Advisor"
 APP_ICON = "🛡️"
+
+# Gemini AI Settings
+# Note: Api key should be stored in streamlit secrets or environment variables
+GEMINI_MODEL = "gemini-1.5-flash"
+USE_GEMINI = True  # Toggle this to False to fall back to the offline engine only

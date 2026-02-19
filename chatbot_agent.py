@@ -3,6 +3,7 @@ Chatbot Agent Module
 Routes user messages to the appropriate tools and formats responses.
 """
 
+import os
 from tools import (
     detect_intent,
     get_recommendations,
@@ -12,10 +13,56 @@ from tools import (
 )
 
 
+import streamlit as st
+import google.generativeai as genai
+from config import USE_GEMINI, GEMINI_MODEL
+
 class ChatbotAgent:
     def __init__(self, analyzer):
         self.analyzer = analyzer
         self.name = "Safety Advisor"
+        self.gemini_enabled = False
+        
+        # Initialize Gemini if configured
+        if USE_GEMINI:
+            api_key = st.secrets.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
+            if api_key:
+                try:
+                    genai.configure(api_key=api_key)
+                    self.model = genai.GenerativeModel(GEMINI_MODEL)
+                    self.gemini_enabled = True
+                except Exception as e:
+                    print(f"Error initializing Gemini: {e}")
+
+    def _synthesize_with_gemini(self, query, context_text, intent_type="general"):
+        """Uses Gemini to synthesize a natural language response based on the search context."""
+        prompt = f"""
+        You are METHAN-AI, an expert Safety Incident Advisor for Methanex. 
+        Your goal is to help users understand safety risks and prevent incidents by learning from historical data.
+        
+        USER QUERY: {query}
+        
+        HISTORICAL CONTEXT:
+        {context_text}
+        
+        INSTRUCTIONS:
+        1. Act as a professional, helpful, and safety-conscious advisor.
+        2. Use the provided historical context to answer the user's query.
+        3. If specific corrective actions are in the context, emphasize them.
+        4. Synthesize the information into a cohesive, conversational response.
+        5. Use markdown for structure (bullet points, bold text).
+        6. If the context doesn't contain a clear answer, use your general safety knowledge but clarify that it's based on general best practices, not specific historical cases from the database.
+        7. Keep the response concise but thorough.
+        
+        INTENT: {intent_type}
+        """
+        
+        try:
+            response = self.model.generate_content(prompt)
+            return response.text
+        except Exception as e:
+            print(f"Gemini Synthesis Error: {e}")
+            return "⚠️ Gemini synthesis failed. Falling back to structured data view."
 
     def respond(self, user_message):
         """
@@ -82,6 +129,20 @@ class ChatbotAgent:
                 "Try describing the situation in more detail, or ask me for general training recommendations."
             )
 
+        if self.gemini_enabled:
+            # Prepare context for Gemini
+            context = f"Matched Incidents:\n"
+            for inc in similar:
+                context += f"- {inc['title']} (Risk: {inc.get('risk_level')})\n"
+                context += f"  What Happened: {inc.get('what_happened')}\n"
+                context += f"  Lessons: {inc.get('lessons_to_prevent')}\n"
+            
+            context += "\nRecommended Actions:\n"
+            for act in actions[:10]:
+                context += f"- {act['action']} (Owner: {act['owner']})\n"
+                
+            return self._synthesize_with_gemini(query, context, "recommendations")
+
         lines = [f"🔍 **Found {len(similar)} similar past incidents:**\n"]
 
         for i, inc in enumerate(similar, 1):
@@ -121,6 +182,16 @@ class ChatbotAgent:
                 "Try being more specific about the type of work or hazard."
             )
 
+        if self.gemini_enabled:
+            context = "Training Lessons:\n"
+            for l in lessons:
+                context += f"- From {l['from_title']}: {l['lesson']}\n"
+            context += "\nGood Practices:\n"
+            for p in practices:
+                context += f"- From {p['from_title']}: {p['practice']}\n"
+                
+            return self._synthesize_with_gemini(query, context, "training")
+
         lines = [f"🎓 **Training & Prevention Recommendations:**\n"]
 
         if lessons:
@@ -157,6 +228,15 @@ class ChatbotAgent:
         if not results:
             return "🤔 No incidents found matching your search. Try different keywords."
 
+        if self.gemini_enabled and results:
+            context = "Found Incidents:\n"
+            for inc in results[:5]:
+                context += f"- {inc['title']} ({inc.get('risk_level')})\n"
+                context += f"  Context: {inc.get('what_happened')}\n"
+            
+            summary = self._synthesize_with_gemini(f"Summarize these search results for: {query}", context, "search")
+            # Combine summary with list
+        
         lines = [f"🔎 **Found {len(results)} incidents:**\n"]
 
         for i, inc in enumerate(results, 1):

@@ -171,7 +171,7 @@ with st.sidebar:
     example_questions = [
         "We had a chemical spill during tank cleaning, what should we do?",
         "What training for confined space work?",
-        "Show me high risk incidents involving pressure release",
+        "Show me high risk incidents involving vapour release",
         "Give me an overview of incident statistics",
         "What lessons from electrical incidents?",
     ]
@@ -181,6 +181,14 @@ with st.sidebar:
             st.session_state["prefill_question"] = q
 
     st.markdown("---")
+    
+    # Gemini Status
+    if agent.gemini_enabled:
+        st.success("✨ Gemini AI: Active")
+    else:
+        st.warning("⚠️ Gemini AI: Inactive (using offline engine)")
+        st.info("To enable Gemini, add `GEMINI_API_KEY` to secrets.")
+
     st.caption("Data: 196 incidents • 1,688 corrective actions")
 
 
