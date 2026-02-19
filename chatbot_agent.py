@@ -14,7 +14,6 @@ from tools import (
 
 
 import streamlit as st
-import google.generativeai as genai
 from config import USE_GEMINI, GEMINI_MODEL
 
 class ChatbotAgent:
@@ -25,14 +24,16 @@ class ChatbotAgent:
         
         # Initialize Gemini if configured
         if USE_GEMINI:
-            api_key = st.secrets.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
-            if api_key:
-                try:
+            try:
+                import google.generativeai as genai
+                api_key = st.secrets.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
+                if api_key:
                     genai.configure(api_key=api_key)
                     self.model = genai.GenerativeModel(GEMINI_MODEL)
                     self.gemini_enabled = True
-                except Exception as e:
-                    print(f"Error initializing Gemini: {e}")
+            except (ImportError, Exception) as e:
+                print(f"Error initializing Gemini: {e}")
+                self.gemini_enabled = False
 
     def _synthesize_with_gemini(self, query, context_text, intent_type="general"):
         """Uses Gemini to synthesize a natural language response based on the search context."""

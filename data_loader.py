@@ -11,8 +11,15 @@ def load_data():
     """
     Load both CSVs and return them as a dict of DataFrames.
     """
-    reports = pd.read_csv(REPORTS_CSV)
-    actions = pd.read_csv(ACTIONS_CSV)
+    try:
+        reports = pd.read_csv(REPORTS_CSV)
+        actions = pd.read_csv(ACTIONS_CSV)
+    except Exception as e:
+        print(f"Error loading CSV files: {e}")
+        # Create empty dummy data to allow app to start
+        reports = pd.DataFrame(columns=["case_id", "title", "what_happened", "why_did_it_happen", "causal_factors", "lessons_to_prevent", "category", "risk_level", "location", "date", "setting", "injury_category", "severity"])
+        actions = pd.DataFrame(columns=["case_id", "action_number", "action", "owner", "timing", "verification"])
+        
     return {"reports": reports, "actions": actions}
 
 
