@@ -30,10 +30,12 @@ def merge_data(reports, actions):
     Returns reports DataFrame with an extra 'actions_list' column.
     """
     # Group actions by case_id into a list of dicts
+    # Using to_frame() is safer across different pandas versions for renaming
     actions_grouped = (
-        actions.groupby("case_id")
+        actions.groupby("case_id", group_keys=True)
         .apply(lambda g: g[["action_number", "action", "owner", "timing", "verification"]].to_dict("records"), include_groups=False)
-        .reset_index(name="actions_list")
+        .to_frame("actions_list")
+        .reset_index()
     )
     merged = reports.merge(actions_grouped, on="case_id", how="left")
     # Fill NaN actions_list with empty list
